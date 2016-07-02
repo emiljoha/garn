@@ -1,0 +1,8 @@
+import os
+import sys
+sys.path.insert(0, os.path.abspath('/home/emil/dip-work-emil/package'))
+
+import garn
+
+w = garn.ThreeD.Wire3D(start_bottom=True, start_top=False)
+garn.system_wide.system_plot(w)

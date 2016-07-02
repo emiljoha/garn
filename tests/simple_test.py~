@@ -1,0 +1,5 @@
+from context import garn
+
+w = garn.Wire3D(start_bottom=False, start_top=True)
+garn.system_plot(w)
+garn.transmission(w, 0, 1, 10)
