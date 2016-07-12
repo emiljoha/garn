@@ -94,7 +94,7 @@ class Wire3D:
             self.wire_length = int(scaling_factor * wire_length)
             self.lead_length = int(scaling_factor * lead_length)
         else:
-            saving._read_file_to_wire(self, file_name)
+            garn.saving._read_file_to_wire(self, file_name)
             self.no_file = False
 
         self.leads = [start_top, start_right, start_left,
@@ -110,7 +110,7 @@ class Wire3D:
     
 
         
-        self.lattice = self.lattice()
+        self.lattice = self._lattice()
         self._make_system()
 
     def __eq__(self, other):
@@ -192,13 +192,13 @@ class Wire3D:
 
         #add sites in scattering region
         self.sys[self.lattice.shape(
-            self._hexagon_wire, (0, 0, 0))] = self.onsite
+            self._hexagon_wire, (0, 0, 0))] = self._onsite
 
         
         self.sys[self.lattice.neighbors()] = - self.t
         
-        lead_start_top, lead_end_top = self.create_leads((0, 0, self.a))
-        lead_start_side, lead_end_side = self.create_leads((self.a, 0, 0))
+        lead_start_top, lead_end_top = self._create_leads((0, 0, self.a))
+        lead_start_side, lead_end_side = self._create_leads((self.a, 0, 0))
 
         self._attach_leads(lead_start_top, lead_start_side,
                           lead_end_top, lead_end_side)
@@ -253,19 +253,19 @@ class Wire3D:
 
         return start_top_site, end_top_site
 
-    def lattice(self):
+    def _lattice(self):
         # Set lattice vectors for lattice object
         basis_vectors = ((self.a, 0, 0), (0, self.a, 0), (0, 0, self.a))
 
         # return the lattice object
         return kwant.lattice.Monatomic(basis_vectors)
 
-    def onsite(self, args):
+    def _onsite(self, args):
         # + im * kwant.digest.gauss(str(site.pos))
         return 6 * self.t
 
         
-    def fill_lead(self, lead, position, side=False):
+    def _fill_lead(self, lead, position, side=False):
         x, y, z = position
                 
         start_x  = -self.base + 1
@@ -284,7 +284,7 @@ class Wire3D:
             
 
 
-    def create_leads(self, sym):
+    def _create_leads(self, sym):
         """ Return lead at the start and end of wire with symetry sym"""
         
         if (sym == (self.a, 0, 0)):
@@ -298,41 +298,10 @@ class Wire3D:
             kwant.TranslationalSymmetry(sym))
 
         pos_start, pos_end = self._positions_of_leads()
-        lead_end = self.fill_lead(lead_end, pos_end, side)
-        lead_start = self.fill_lead(lead_start, pos_start, side)
+        lead_end = self._fill_lead(lead_end, pos_end, side)
+        lead_start = self._fill_lead(lead_start, pos_start, side)
 
         lead_end[self.lattice.neighbors()] = -self.t
         lead_start[self.lattice.neighbors()] = -self.t
 
         return lead_start, lead_end
-
-
-    def connection_to_extensions(self, pos):
-        centerstart = (0, self.lead_length/2.0, 0)
-        centerend = (0, self.wire_length - self.lead_length/2.0, 0)
-        lx = 2 * self.base
-        ly = self.lead_length
-        lz = np.sqrt(3) * self.base
-
-        start = self.cube(pos, centerstart, lx, ly, lz)
-        end = self.cube(pos, centerend, lx, ly, lz) 
-        return start or end 
-        
-    def cube(self, pos, center, lx, ly, lz):
-        x, y, z = pos
-        x0, y0, z0 = center
-        #Normalize to make(0, 0, 0) center
-        x = x - x0
-        y = y - y0
-        z = z - z0
-        # Change meaning of lx_i to the distance from the center to
-        # the edges
-        lx = lx/2.0
-        ly = ly/2.0
-        lz = lz/2.0
-        if -lx < x < lx:
-            if -ly <= y < ly:
-                if -lz < z < lz:
-                    return True
-        else:
-            return

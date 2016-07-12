@@ -104,6 +104,7 @@ class Wire2D:
         self._make_system()
 
     def __eq__(self, other):
+        """Define equality as equality of transmission results"""
         if isinstance(other, self.__class__):
             if len(self.transmission) == len(other.transmission):
                 for i in range(len(self.transmission)):
@@ -151,18 +152,18 @@ class Wire2D:
         
         # Fill a rectange with sites
         self.sys[self.lattice.shape(
-            self.rectangle_wire, (0, 0))] = self.onsite
+            self._rectangle_wire, (0, 0))] = self._onsite
                  
         # Set hoppings between those sites.
         self.sys[self.lattice.neighbors()] = -self.t
 
-        lead_start, lead_end = self.create_leads()
+        lead_start, lead_end = self._create_leads()
 
         self._attach_leads(lead_start, lead_end)
 
         self.sys = self.sys.finalized()
                  
-    def rectangle_wire(self, pos):
+    def _rectangle_wire(self, pos):
         """ find out if the position is inside the scattering region"""
         
         x, y = pos
@@ -171,11 +172,11 @@ class Wire2D:
         else:
             return False         
                          
-    def onsite(self, args):
-        # + im * kwant.digest.gauss(str(site.pos))
+    def _onsite(self, args):
+        """ Retrive onsite value of sites"""
         return 4 * self.t
                  
-    def create_leads(self):
+    def _create_leads(self):
         """ Return leads of system ready to be attached"""
         # The lead builder object is created with a symetry object as argument that sets the symmetry of the lead.
         # Lead need to have a symmetry property to function.

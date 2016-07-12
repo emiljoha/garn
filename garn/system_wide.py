@@ -1,6 +1,6 @@
 import kwant
+import garn
 
-import garn.saving
 
 def system_plot(wire):
     """Illustrative plot of wire sites and hoppings.
