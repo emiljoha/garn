@@ -31,7 +31,7 @@ classes :class:`~garn.Wire3D` or :class:`~garn.Wire2D`. In this case
                            identifier="test-2D", step_length=1)
 
 
-Now you can plot the system with the :meth: `~garn.system_plot`
+Now you can plot the system with the :meth:`~garn.system_plot`
 methodto see if it looks as you expect.
 
 .. code-block:: Python
@@ -76,8 +76,8 @@ sys.path.insert(0,
 
 
 
-from wire_3d import Wire3D
+from garn.wire_3d import Wire3D
 
-from system_wide import system_plot, in_out_nums, transmission
+from garn.system_wide import system_plot, transmission
 
-from wire_2D import Wire2D
+from garn.wire_2D import Wire2D

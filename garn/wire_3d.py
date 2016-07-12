@@ -3,9 +3,9 @@ from math import sqrt
 from matplotlib import pyplot
 import numpy as np
 
-from geometry import hexagon, extension
-import system_wide
-import saving
+from garn.geometry import hexagon, extension
+import garn.system_wide
+import garn.saving
 
 
 class Wire3D:
@@ -94,7 +94,7 @@ class Wire3D:
             self.wire_length = int(scaling_factor * wire_length)
             self.lead_length = int(scaling_factor * lead_length)
         else:
-            saving.read_file_to_wire(self, file_name)
+            saving._read_file_to_wire(self, file_name)
             self.no_file = False
 
         self.leads = [start_top, start_right, start_left,
@@ -111,9 +111,14 @@ class Wire3D:
 
         
         self.lattice = self.lattice()
-        self.make_system()
+        self._make_system()
 
     def __eq__(self, other):
+        """ Defentition of equality used in testing
+
+        Compares transmission attributes element wise
+
+        """
         if isinstance(other, self.__class__):
             if len(self.transmission) == len(other.transmission):
                 for i in range(len(self.transmission)):
@@ -126,8 +131,29 @@ class Wire3D:
 #---------------------------------------------------------------------
 # Internal functions
 #---------------------------------------------------------------------
-    def attach_leads(self, lead_start_top, lead_start_side, lead_end_top,
+    def _attach_leads(self, lead_start_top, lead_start_side, lead_end_top,
                      lead_end_side):
+        """Attaches leads to system according to the self.leads list
+
+        Parameters
+        ----------
+        lead_start_top : Builder_ with 1D translational symmetry in z-direction
+            Builder of the lead which is to be attached on the top of
+            the beginning.
+        lead_start_side : Builder_ with 1D translational symmetry in x-direction
+            Builder of the lead which is to be attached on the side of
+            the beginning.
+        lead_end_top : Builder_ with 1D translational symmetry in z-direction
+            Builder of the lead which is to be attached on the top of
+            the end.
+        lead_end_side : Builder_ with 1D translational symmetry in x-direction
+            Builder of the lead which is to be attached on the side of
+            the end.
+
+        .. _Builder:: http://kwant-project.org/doc/1.0/reference/generated/kwant.builder.Builder#kwant.builder.Builder
+
+        """
+        
         if self.leads[0]:
             self.sys.attach_lead(lead_start_top)
             
@@ -152,22 +178,21 @@ class Wire3D:
         if self.leads[7]:
             self.sys.attach_lead(lead_end_top.reversed())
 
-    def make_system(self):
+    def _make_system(self):
         """Fills the Builder object with sites and hoppings.
 
-        Adds nodes to the graph(onsite hamiltonians) To change the onsite
-        hamiltonian change the method onsite.
-
-        Adds hopping between sites. (hopping integral)
-
-        Also finalizes system.
+        This is were the sites in the scattering region are added to
+        the kwant.Builder object and functions to create leads and
+        attach them are called. Welcome to the heart of
+        :class:`garn.Wire3D`.
+        
         """
 
         self.sys = kwant.Builder()
 
         #add sites in scattering region
         self.sys[self.lattice.shape(
-            self.hexagon_wire, (0, 0, 0))] = self.onsite
+            self._hexagon_wire, (0, 0, 0))] = self.onsite
 
         
         self.sys[self.lattice.neighbors()] = - self.t
@@ -175,25 +200,45 @@ class Wire3D:
         lead_start_top, lead_end_top = self.create_leads((0, 0, self.a))
         lead_start_side, lead_end_side = self.create_leads((self.a, 0, 0))
 
-        self.attach_leads(lead_start_top, lead_start_side,
+        self._attach_leads(lead_start_top, lead_start_side,
                           lead_end_top, lead_end_side)
 
         self.sys = self.sys.finalized()
 
 
-    def hexagon_wire(self, pos):
-        """ find out if the position is inside a hexagonal wire."""
+    def _hexagon_wire(self, pos):
+        """ Find out if the position is inside a hexagonal wire."""
         x, y, z = pos
         if (hexagon((x, z), self.base) & (y >= 0) & (y < self.wire_length)):
-            return True
-        elif self.connection_to_extensions(pos):
             return True
         else:
             return False
 
 
-    def positions_of_leads(self):
-        """Find sites to place leads """
+    def _positions_of_leads(self):
+        """Calculate positions from where to start fill leads
+
+        Returns
+        -------
+        start_top_site: tuple of 3 floats
+            Top left corner of rectange enclosing the hexagon of the
+            beggining of the wire.
+        end_top_site: tuple of 3 floats
+            Top left corner of rectange enclosing the hexagon of the
+            wire at a the begging of the lead at the end of the wire.
+
+        Notes
+        -----
+        Explaining these positions are messy so here is
+        some math instead.
+
+        .. math::
+
+            start_top_site = (-\dfrac{base}{2}, 0, \dfrac{\sqrt{3}base}{2}) \
+
+            start_end_site = (-\dfrac{base}\2}, wire_length - lead_length, \dfrac{\sqrt{3}base}{2})
+
+        """
         xs, ys, zs = self.lattice.closest(( - self.base / 2.0, 0,
                                             sqrt(3) / 2.0 *
                                             self.base))
@@ -252,7 +297,7 @@ class Wire3D:
         lead_end = kwant.Builder(
             kwant.TranslationalSymmetry(sym))
 
-        pos_start, pos_end = self.positions_of_leads()
+        pos_start, pos_end = self._positions_of_leads()
         lead_end = self.fill_lead(lead_end, pos_end, side)
         lead_start = self.fill_lead(lead_start, pos_start, side)
 

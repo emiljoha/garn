@@ -1,15 +1,14 @@
 import kwant
 from math import sqrt
 from matplotlib import pyplot
-from geometry import rectangle
-from saving import read_file_to_wire
+from garn.geometry import rectangle
+from garn.saving import _read_file_to_wire
 
 
 class Wire2D:
     """Wire2D facilitates the modelling of nanowire contact geometries in
     Kwant by actings as a help in constructing a 2D projection of a
     nanowire and attaching customizabel contacts in each end.
-
     """
     
     
@@ -32,7 +31,9 @@ class Wire2D:
                  
         """A Instance of Wire2D describes the properties of a 2D nanowire
 
-        Wire2D facilitates the modelling of nanowires by 
+        Wire2D facilitates the modelling of nanowires with a numerical
+        effective mass method using Kwant by serving as a the nanowire
+        object.
 
         .. warning:: If keyword parameter `file_name` is set to
                      anything else than "" all other parameters are
@@ -85,7 +86,7 @@ class Wire2D:
                           end_left, False]
 
         else:
-            read_file_to_wire(self, file_name)
+            _read_file_to_wire(self, file_name)
             self.no_file = False
 
 
@@ -100,7 +101,7 @@ class Wire2D:
         basis_vectors = ((self.a, 0), (0, self.a))
         self.lattice = kwant.lattice.Monatomic(basis_vectors)
         
-        self.make_system()
+        self._make_system()
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
@@ -111,28 +112,19 @@ class Wire2D:
                 return True
         else:
             return False
-                 
-                 
-    def make_system(self):
-        """Fills the Builder object with all sites and hoppings.
-                 
-        Adds nodes to the graph(onsite hamiltonians) To change the onsite
-        hamiltonian change the method onsite.
-                 
-        Adds hopping between sites. (hopping integral)
-                 
-        Also finalizes system.
+
+    def _attach_leads(self, lead_start, lead_end):
+        """Attaches leads to system according to the self.leads list
+        
+        Parameters
+        ----------
+        lead_top : `Builder <http://kwant-project.org/doc/1.0/reference/generated/kwant.builder.Builder#kwant.builder.Builder>`_ with 1D translational symmetry in y-direction
+            Builder of the lead which is to be attached in the beginning.
+        lead_side : `Builder <http://kwant-project.org/doc/1.0/reference/generated/kwant.builder.Builder#kwant.builder.Builder>`_ with 1D translational symmetry in y-direction
+            Builder of the lead which is to be attached in the end.
+
         """
         
-        # add nodes in graph
-        self.sys[self.lattice.shape(
-            self.rectangle_wire, (0, 0))] = self.onsite
-                 
-        # add hoppings between nodes
-        self.sys[self.lattice.neighbors()] = -self.t
-                 
-        lead_start, lead_end = self.create_leads()
-
         if self.leads[2]:
             self.sys.attach_lead(lead_start)
 
@@ -144,7 +136,30 @@ class Wire2D:
 
         if self.leads[5]:
             self.sys.attach_lead(lead_end.reversed())
+        
                  
+                 
+    def _make_system(self):
+        """Construct the wire.sys (kwant.Builder) attribute. 
+
+        This is were the sites in the scattering region are added to
+        the kwant.Builder object and functions to create leads and
+        attach them are called. Welcome to the heart of
+        :class:`garn.Wire3D`.
+        
+        """
+        
+        # Fill a rectange with sites
+        self.sys[self.lattice.shape(
+            self.rectangle_wire, (0, 0))] = self.onsite
+                 
+        # Set hoppings between those sites.
+        self.sys[self.lattice.neighbors()] = -self.t
+
+        lead_start, lead_end = self.create_leads()
+
+        self._attach_leads(lead_start, lead_end)
+
         self.sys = self.sys.finalized()
                  
     def rectangle_wire(self, pos):

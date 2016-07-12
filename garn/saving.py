@@ -1,9 +1,21 @@
 from math import sqrt
 
-def read_file_to_wire(wire, file_name):
-    """ Construct wire instance from data file.
-    If format of file correct creates the same attributes as
-    creating from skratch. + energy and transmission data
+def _read_file_to_wire(wire, file_name):
+    """ Initialize variables for wire instance from data file.
+    
+    Internal function that gives the ´wire´ the same properties as the
+    wire used to produce the file ´file_name´
+
+    .. warning::
+        This method will write over all prior attributes of `wire` with
+        those specified in the `file_name` file. 
+                 
+
+    Parameters
+    ----------
+    wire : :class:`garn.Wire3D` or :class:`garn.Wire2D`
+    file_name : str
+    
     """
     
     f = open(file_name)
@@ -45,10 +57,25 @@ def read_file_to_wire(wire, file_name):
         wire.transmission.append(float(line2[1]))
 
 
-def save_to_file(wire, energy, transmission):
-    """ Save the the energy transmission double
-    Saved as two columns with separation character "space".
-    Info about wire written to file. 
+def _save_to_file(wire, energy, transmission):
+    """Save result of calculation to file.
+
+    Saves the `energy` and `transmission` to the file with name
+    `wire.file_name`.
+    
+    Parameters
+    ----------
+    wire : :class:`garn.Wire3D` or :class:`garn.Wire2D`
+    energy : float
+    transmission: float
+    
+    Notes
+    -----
+    If wire was initialized with the ´file_name´ parameter
+    the function saves to the end of the old file. If the wire
+    instance was initialised with the other parameters any old file with
+    with the same name will be overwritten with the new data.
+
     """
                                                  
     if wire.no_file == True: 

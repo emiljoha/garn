@@ -1,6 +1,0 @@
-Complete reference
-------------------
-
-.. automodule::  garn.saving
-    :members:
-    :private-members:	    
