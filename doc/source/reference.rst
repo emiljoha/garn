@@ -4,15 +4,16 @@ Reference of public functions
 .. image:: figures/2D-system.png
 
 .. autoclass:: garn.Wire2D
-        :members:
-	       
+        :noindex:
+
 .. image:: figures/3D-system.png
 	   
 .. autoclass:: garn.Wire3D
-        :members:
-	       
-.. autofunction:: garn.system_wide
-        :members:				 
+        :noindex:
 
+		  
+.. automodule:: garn.system_wide		     
+        :members:
+        :noindex:
 
 	

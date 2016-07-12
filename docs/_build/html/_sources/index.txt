@@ -13,8 +13,9 @@ Contents:
 
     intro
    
-    reference	       
-
+    reference
+    
+    comp_ref
 
 
 Indices and tables

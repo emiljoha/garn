@@ -5,14 +5,15 @@ Reference of public functions
 
 .. autoclass:: garn.Wire2D
         :members:
-	       
+        :noindex:
+
 .. image:: figures/3D-system.png
 	   
 .. autoclass:: garn.Wire3D
         :members:
-	       
+        :noindex:
+	   
 .. autofunction:: garn.system_wide
-        :members:				 
-
+        :noindex:
 
 	
