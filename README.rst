@@ -4,9 +4,9 @@ transmission.
 
 `Kwant <https://kwant-project.org>`_ is used for calculations. 
 
-The documentation of the software can be found in the "docs/html_docs"
-directory. Start by opening the "index.html" file. The documentation
-is also avalible through `this website
+The most up to date documentation of the software can be found in the
+"doc/build/html" directory. Start by opening the "start_here.html"
+file. The documentation is also avalible through `this website
 <http://web.comhem.se/emil.sweden/html_docs/index.html>`_ .
 
 A formal introduction can be found throuhg the bachelor thesis
@@ -17,7 +17,7 @@ properties of semiconductor nanowires
 
 Installation
 ------------
-If not allready installed install `Kwant <https://kwant-project.org>`_. 
+If not allready installed, install `Kwant <https://kwant-project.org>`_. 
 
-To install Garn simply copy the "/garn" folder to somewere in your
-sys.path.
+To install Garn simply copy /garn folder to somewere in your
+sys.path. No need for compiling. 
