@@ -315,6 +315,12 @@ the end of the wire (default True)</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="garn.Wire2D._create_leads">
+<code class="descname">_create_leads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#garn.Wire2D._create_leads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return leads of system ready to be attached</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="garn.Wire2D._make_system">
 <code class="descname">_make_system</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#garn.Wire2D._make_system" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct the wire.sys (kwant.Builder) attribute.</p>
@@ -325,14 +331,14 @@ attach them are called. Welcome to the heart of
 </dd></dl>
 
 <dl class="method">
-<dt id="garn.Wire2D.create_leads">
-<code class="descname">create_leads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#garn.Wire2D.create_leads" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return leads of system ready to be attached</p>
+<dt id="garn.Wire2D._onsite">
+<code class="descname">_onsite</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#garn.Wire2D._onsite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrive onsite value of sites</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="garn.Wire2D.rectangle_wire">
-<code class="descname">rectangle_wire</code><span class="sig-paren">(</span><em>pos</em><span class="sig-paren">)</span><a class="headerlink" href="#garn.Wire2D.rectangle_wire" title="Permalink to this definition">¶</a></dt>
+<dt id="garn.Wire2D._rectangle_wire">
+<code class="descname">_rectangle_wire</code><span class="sig-paren">(</span><em>pos</em><span class="sig-paren">)</span><a class="headerlink" href="#garn.Wire2D._rectangle_wire" title="Permalink to this definition">¶</a></dt>
 <dd><p>find out if the position is inside the scattering region</p>
 </dd></dl>
 
@@ -462,6 +468,12 @@ the end.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="garn.Wire3D._create_leads">
+<code class="descname">_create_leads</code><span class="sig-paren">(</span><em>sym</em><span class="sig-paren">)</span><a class="headerlink" href="#garn.Wire3D._create_leads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return lead at the start and end of wire with symetry sym</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="garn.Wire3D._hexagon_wire">
 <code class="descname">_hexagon_wire</code><span class="sig-paren">(</span><em>pos</em><span class="sig-paren">)</span><a class="headerlink" href="#garn.Wire3D._hexagon_wire" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find out if the position is inside a hexagonal wire.</p>
@@ -505,12 +517,6 @@ some math instead.</p>
 <div class="math">
 \[start_top_site = (-\dfrac{base}{2}, 0, \dfrac{\sqrt{3}base}{2}) 
 start_end_site = (-\dfrac{base}}, wire_length - lead_length, \dfrac{\sqrt{3}base}{2})\]</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="garn.Wire3D.create_leads">
-<code class="descname">create_leads</code><span class="sig-paren">(</span><em>sym</em><span class="sig-paren">)</span><a class="headerlink" href="#garn.Wire3D.create_leads" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return lead at the start and end of wire with symetry sym</p>
 </dd></dl>
 
 </dd></dl>
