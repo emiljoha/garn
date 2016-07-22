@@ -7,7 +7,7 @@ transmission.
 The most up to date documentation of the software can be found in the
 "doc/build/html" directory. Start by opening the "start_here.html"
 file. The documentation is also avalible through `this website
-<http://web.comhem.se/emil.sweden/html_docs/index.html>`_ .
+<http://garn.hopto.org>`_ .
 
 A formal introduction can be found throuhg the bachelor thesis
 `Numerical simulations of contact geometry effects on transport
@@ -19,5 +19,5 @@ Installation
 ------------
 If not allready installed, install `Kwant <https://kwant-project.org>`_. 
 
-To install Garn simply copy /garn folder to somewere in your
+To install Garn simply copy garn folder in the repository to somewere in your
 sys.path. No need for compiling. 
