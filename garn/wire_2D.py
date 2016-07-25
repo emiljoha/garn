@@ -76,7 +76,32 @@ class Wire2D(Wire):
         self.lattice = kwant.lattice.Monatomic(basis_vectors)
         
         self._make_system()
+
+    def _make_system(self):
+        """Construct the wire.sys (kwant.Builder) attribute. 
+
+        This is were the sites in the scattering region are added to
+        the kwant.Builder object and functions to create leads and
+        attach them are called. Welcome to the heart of
+        :class:`garn.Wire3D`.
         
+        """
+        
+        # Fill a rectange with sites
+        self.sys[self.lattice.shape(
+            self._rectangle_wire, (0, 0))] = self._onsite
+       
+        
+        # Set hoppings between those sites.
+        self.sys[self.lattice.neighbors()] = -self.t
+        
+        lead_start, lead_end = self._create_leads()
+        
+        self._attach_leads(lead_start, lead_end)
+
+        self.sys = self.sys.finalized()
+        
+
     def _attach_leads(self, lead_start, lead_end):
         """Attaches leads to system according to the self.leads list
         
@@ -100,32 +125,7 @@ class Wire2D(Wire):
 
         if self.leads[5]:
             self.sys.attach_lead(lead_end.reversed())
-        
-                 
-                 
-    def _make_system(self):
-        """Construct the wire.sys (kwant.Builder) attribute. 
-
-        This is were the sites in the scattering region are added to
-        the kwant.Builder object and functions to create leads and
-        attach them are called. Welcome to the heart of
-        :class:`garn.Wire3D`.
-        
-        """
-        
-        # Fill a rectange with sites
-        self.sys[self.lattice.shape(
-            self._rectangle_wire, (0, 0))] = self._onsite
-                 
-        # Set hoppings between those sites.
-        self.sys[self.lattice.neighbors()] = -self.t
-
-        lead_start, lead_end = self._create_leads()
-
-        self._attach_leads(lead_start, lead_end)
-
-        self.sys = self.sys.finalized()
-                 
+              
     def _rectangle_wire(self, pos):
         """ find out if the position is inside the scattering region"""
         

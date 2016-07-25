@@ -88,6 +88,7 @@ class Wire3D(Wire):
         
         self.lattice = self._lattice()
         self._make_system()
+        self.system_plot()
 
 
 #---------------------------------------------------------------------
