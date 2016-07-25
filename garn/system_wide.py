@@ -1,11 +1,12 @@
 import kwant
 import garn
+from numpy import sqrt
 
 class Wire(object):
     
     a = 1
     energies = []
-    transmission = []
+    transmission_data = []
     sys = kwant.Builder()
 
     parameters_names = ["identifier", "t", "base", "wire_length",
@@ -76,7 +77,7 @@ class Wire(object):
                           end_bottom]
 
         else:
-            self._read_file_to_wire(self, file_name)
+            self._read_file_to_wire(file_name)
             self.no_file = False
 
 
@@ -213,12 +214,12 @@ class Wire(object):
         end_step = int(end_energy / float(stepsize))
 
         self.energies = [stepsize * i for i in range(start_step, end_step)]
-        self.transmission = []
+        self.transmission_data = []
             
-        in_leads, out_leads = _in_out_nums(self.leads)
+        in_leads, out_leads = self._in_out_nums()
 
         if print_to_commandline:
-            print("Transmission calculated for energies [t]: ")
+            print("Transmission_Data calculated for energies [t]: ")
             
         for en in self.energies:
             smatrix = kwant.smatrix(self.sys, en, in_leads=in_leads,
@@ -230,8 +231,8 @@ class Wire(object):
                     con = smatrix.transmission(j, i)
                     con_tot = con_tot + con
                     #print(str(i) + "-" + str(j) + "= " + str(con)) 
-            self.transmission.append(con_tot)
-            self_save_to_file(en, con_tot)
+            self.transmission_data.append(con_tot)
+            self._save_to_file(en, con_tot)
 
             if print_to_commandline:
                 print(str(en) + " " + str(con_tot))
@@ -240,13 +241,13 @@ class Wire(object):
     def __eq__(self, other):
         """ Defentition of equality used in testing
 
-        Compares transmission attributes element wise
+        Compares transmission_data attributes element wise
         """
         
         if isinstance(other, self.__class__):
-            if len(self.transmission) == len(other.transmission):
-                for i in range(len(self.transmission)):
-                    if str(self.transmission[i]) != str(other.transmission[i]):
+            if len(self.transmission_data) == len(other.transmission_data):
+                for i in range(len(self.transmission_data)):
+                    if str(self.transmission_data[i]) != str(other.transmission_data[i]):
                         return False
                 return True
         else:
@@ -294,8 +295,8 @@ class Wire(object):
 
         """
         print(self.energies)
-        print(self.transmission)
-        pyplot.plot(self.energies, self.transmission)
+        print(self.transmission_data)
+        pyplot.plot(self.energies, self.transmission_data)
         pyplot.ylabel("Transmission [$e * e / h$]")
 
         pyplot.xlabel("Energy[$hbar squared / 2 m a*a$]")
@@ -341,7 +342,7 @@ class Wire(object):
         self.identifier = values[0]
         self.t = float(values[1])
         base  = float(values[2])
-        self_length = float(values[3])
+        wire_length = float(values[3])
         lead_length = float(values[4])
 
         self.leads = []
@@ -358,7 +359,7 @@ class Wire(object):
         for line in f:
             line2 = line.split()
             self.energies.append(float(line2[0]))
-            self.transmission.append(float(line2[1]))
+            self.transmission_data.append(float(line2[1]))
 
 
     def _save_to_file(self, energy, transmission):

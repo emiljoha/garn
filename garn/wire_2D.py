@@ -75,7 +75,7 @@ class Wire2D(Wire):
         basis_vectors = ((self.a, 0), (0, self.a))
         self.lattice = kwant.lattice.Monatomic(basis_vectors)
         
-        self._make_
+        self._make_system()
         
     def _attach_leads(self, lead_start, lead_end):
         """Attaches leads to system according to the self.leads list
