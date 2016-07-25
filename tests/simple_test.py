@@ -21,7 +21,7 @@ test_wire_3d = garn.Wire3D(base=3, wire_length=30, lead_length=5,
                            end_top=True, end_right=True,
                            end_left=True, end_bottom=False)
 #garn.system_plot(test_wire_3d)
-garn.transmission(test_wire_3d, 0, 1, 10, print_to_commandline=False)
+test_wire_3d.transmission(0, 1, 10, print_to_commandline=False)
           
 if equal_files("data-simple-test-3D", "data-ref-3D"):        
     print("3D transmission and write test... Passed")
@@ -34,7 +34,7 @@ test_wire_2d = garn.Wire2D(base=3, wire_length=30, lead_length=5,
                            start_right=True, start_left=True,
                            end_right=True, end_left=True)
 #garn.system_plot(test_wire_2d)
-garn.transmission(test_wire_2d, 0, 1, 10, print_to_commandline=False)
+test_wire_2d.transmission(0, 1, 10, print_to_commandline=False)
 
 if equal_files("data-simple-test-2D", "data-ref-2D"):        
     print("2D transmission and write test... Passed")
