@@ -15,8 +15,6 @@ def truncate_list(lista, digits):
 class Wire(object):
     
     a = 1
-    energies = []
-    transmission_data = []
 
     parameters_names = ["identifier", "t", "base", "wire_length",
                         "lead_length", "start_top", "start_right",
@@ -72,6 +70,9 @@ class Wire(object):
             Boolian vaules of there should be a lead on the bottom at
             the end of the wire.
         """
+        self.energies = []
+        self.transmission_data = []
+        self.sys = kwant.Builder()
                  
         if (file_name == ""):
             scaling_factor = step_length ** -1
@@ -89,7 +90,7 @@ class Wire(object):
             self._read_file_to_wire(file_name)
             self.no_file = False
 
-        self.sys = kwant.Builder()
+
         self.parameters_values = (self.identifier, self.t, self.base,
                              self.wire_length, self.lead_length,
                              self.leads[0], self.leads[1],
@@ -363,7 +364,7 @@ class Wire(object):
         # adjust spacial characteristics to the step_length
         step_length = self.t ** - sqrt(2)
         scaling_factor = step_length ** -1
-        self.no_file = True # Not really shure about this parameter.
+        self.no_file = False # Not really shure about this parameter.
         self.base = int(scaling_factor * base)  # width of wire
         self.wire_length = int(scaling_factor * wire_length)
         self.lead_length = int(scaling_factor * lead_length)
