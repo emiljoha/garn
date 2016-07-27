@@ -243,15 +243,14 @@ class Wire(object):
 
         Compares transmission_data attributes element wise
         """
-        
-        if isinstance(other, self.__class__):
-            if len(self.transmission_data) == len(other.transmission_data):
-                for i in range(len(self.transmission_data)):
-                    if str(self.transmission_data[i]) != str(other.transmission_data[i]):
-                        return False
-                return True
-        else:
-            return False
+        if self.transmission_data == other.transmission_data:
+            if self.base == other.base:
+                if self.wire_length == other.wire_length:
+                    if self.lead_length == other.lead_length:
+                        if self.step_length == other.step_length:
+                            return True
+
+        return False
         
     def _energy_exist_dialog():
         """User desides if to overwrite earlier transmission data
@@ -325,11 +324,9 @@ class Wire(object):
         
         f = open(file_name)
 
-        identifier = 0
-
-        values = []
-                              
-        # read wire information from file
+        
+        # read wire information from file to list
+        values = []                              
         for parameter in self.parameters_names:
             line = f.readline()
             line = line.split()
@@ -341,7 +338,8 @@ class Wire(object):
 
         self.identifier = values[0]
         self.t = float(values[1])
-        base  = float(values[2])
+        # Not yet adjusted for steplength
+        base  = float(values[2]) 
         wire_length = float(values[3])
         lead_length = float(values[4])
 
@@ -349,9 +347,10 @@ class Wire(object):
         for value in values[5:13]:
             self.leads.append(bool(value))
 
+        # adjust spacial characteristics to the step_length
         step_length = self.t ** - sqrt(2)
         scaling_factor = step_length ** -1
-        self.no_file = True
+        self.no_file = True # Not really shure about this parameter.
         self.base = int(scaling_factor * base)  # width of wire
         self.wire_length = int(scaling_factor * wire_length)
         self.lead_length = int(scaling_factor * lead_length)
