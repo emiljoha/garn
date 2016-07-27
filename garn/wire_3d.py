@@ -99,7 +99,7 @@ class Wire3D(Wire):
 
         Parameters
         ----------
-        lead_start_top : pBuilder_ with 1D translational symmetry in z-direction
+        lead_start_top : Builder_ with 1D translational symmetry in z-direction
             Builder of the lead which is to be attached on the top of
             the beginning.
         lead_start_side : Builder_ with 1D translational symmetry in x-direction

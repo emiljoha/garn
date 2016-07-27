@@ -66,7 +66,7 @@ classes <a class="reference internal" href="comp_ref.html#garn.Wire3D" title="ga
 </div>
 <p>Now you can plot the system with the <code class="xref py py-meth docutils literal"><span class="pre">system_plot()</span></code>
 methodto see if it looks as you expect.</p>
-<div class="highlight-Python"><div class="highlight"><pre><span></span><span class="n">garn</span><span class="o">.</span><span class="n">system_plot</span><span class="p">(</span><span class="n">wire</span><span class="p">)</span>
+<div class="highlight-Python"><div class="highlight"><pre><span></span><span class="n">wire</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>In the end it is all about calculation the transmission through the
@@ -74,7 +74,7 @@ system. This is done with with the :meth: <cite>~garn.transmission</cite>
 function. For example calculating the transmission from the start to
 the end of the wire in 10 equidistant points in the intervall 0 to 1 [t]
 can done with the command.</p>
-<div class="highlight-Python"><div class="highlight"><pre><span></span><span class="n">garn</span><span class="o">.</span><span class="n">transmission</span><span class="p">(</span><span class="n">wire</span><span class="p">,</span> <span class="n">start_energy</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_energy</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<div class="highlight-Python"><div class="highlight"><pre><span></span><span class="n">wire</span><span class="o">.</span><span class="n">transmission</span><span class="p">(</span><span class="n">start_energy</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_energy</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                   <span class="n">number_of_points</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>

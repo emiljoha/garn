@@ -10,7 +10,6 @@ Reference of public functions
 	   
 .. autoclass:: garn.Wire3D
         :noindex:
-
 		  
 .. automodule:: garn.system_wide		     
         :members:

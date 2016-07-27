@@ -36,7 +36,7 @@ methodto see if it looks as you expect.
 
 .. code-block:: Python
 
-    garn.system_plot(wire)
+    wire.plot()
 
 In the end it is all about calculation the transmission through the
 system. This is done with with the :meth: `~garn.transmission`
@@ -46,7 +46,7 @@ can done with the command.
 
 .. code-block:: Python
 
-    garn.transmission(wire, start_energy=0, end_energy=1,
+    wire.transmission(start_energy=0, end_energy=1,
                       number_of_points=10)
 
 The transmission data and information about the wire is saved in a

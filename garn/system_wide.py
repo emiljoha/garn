@@ -99,7 +99,7 @@ class Wire(object):
                              self.leads[6], self.leads[7])
 
     
-    def system_plot(self):
+    def plot(self):
         """Illustrative plot of wire sites and hoppings.
 
         Basic plot of all the sites and hopping is the

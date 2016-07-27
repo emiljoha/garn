@@ -5,10 +5,6 @@ Complete reference
         :members:
         :private-members:
 		
-.. automodule::  garn.saving
-        :members:
-        :private-members:	    
-
 .. autoclass:: garn.Wire2D
         :members:
         :private-members:
