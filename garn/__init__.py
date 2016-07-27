@@ -78,8 +78,7 @@ sys.path.insert(0,
 
 from garn.wire_3d import Wire3D
 
-from garn.system_wide import system_plot, transmission
 
 from garn.wire_2D import Wire2D
 
-import garn.saving
+

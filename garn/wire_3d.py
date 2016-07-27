@@ -4,25 +4,16 @@ from matplotlib import pyplot
 import numpy as np
 
 from garn.geometry import hexagon, extension
-import garn.system_wide
-import garn.saving
+from garn.system_wide import Wire
 
 
-class Wire3D:
+
+class Wire3D(Wire):
     """Wire3D facilitates the modelling of nanowire contact geometries in
     Kwant by actings as a help in constructing a hexagonal nanowire
     and attaching customizabel contacts in each end.
 
     """
-    
-    a = 1
-    energies = []
-    transmission = []
-
-    parameters_names = ["identifier", "t", "base", "wire_length",
-                        "lead_length", "start_top", "start_right",
-                        "start_left", "start_bottom", "end_top",
-                        "end_right", "end_left", "end_bottom"]
 
     
     def __init__(self, base=3, wire_length=30, lead_length=5,
@@ -84,49 +75,20 @@ class Wire3D:
             instance.
 
         """
-
-        if (file_name == ""):
-            scaling_factor = step_length ** -1
-            self.t = step_length ** -2
-            self.no_file = True
-            self.identifier = identifier
-            self.base = int(scaling_factor * base)  # side of hexagon
-            self.wire_length = int(scaling_factor * wire_length)
-            self.lead_length = int(scaling_factor * lead_length)
-        else:
-            garn.saving._read_file_to_wire(self, file_name)
-            self.no_file = False
-
-        self.leads = [start_top, start_right, start_left,
-                      start_bottom, end_top, end_right, end_left,
-                      end_bottom]
-
-        self.parameters_values = (self.identifier, self.t, self.base,
-                             self.wire_length, self.lead_length,
-                             self.leads[0], self.leads[1],
-                             self.leads[2], self.leads[3],
-                             self.leads[4], self.leads[5],
-                             self.leads[6], self.leads[7])
+        Wire.__init__(self, base=base, wire_length=wire_length,
+                      lead_length=lead_length, identifier=identifier,
+                      file_name=file_name, step_length=step_length,
+                      start_top=start_top, start_right=start_right,
+                      start_left=start_left,
+                      start_bottom=start_bottom, end_top=end_top,
+                      end_right=end_right, end_left=end_left,
+                      end_bottom=end_bottom)
     
 
         
         self.lattice = self._lattice()
         self._make_system()
 
-    def __eq__(self, other):
-        """ Defentition of equality used in testing
-
-        Compares transmission attributes element wise
-
-        """
-        if isinstance(other, self.__class__):
-            if len(self.transmission) == len(other.transmission):
-                for i in range(len(self.transmission)):
-                    if str(self.transmission[i]) != str(other.transmission[i]):
-                        return False
-                return True
-        else:
-            return False
 
 #---------------------------------------------------------------------
 # Internal functions
@@ -137,7 +99,7 @@ class Wire3D:
 
         Parameters
         ----------
-        lead_start_top : Builder_ with 1D translational symmetry in z-direction
+        lead_start_top : pBuilder_ with 1D translational symmetry in z-direction
             Builder of the lead which is to be attached on the top of
             the beginning.
         lead_start_side : Builder_ with 1D translational symmetry in x-direction
@@ -151,7 +113,6 @@ class Wire3D:
             the end.
 
         .. _Builder:: http://kwant-project.org/doc/1.0/reference/generated/kwant.builder.Builder#kwant.builder.Builder
-
         """
         
         if self.leads[0]:
@@ -188,8 +149,6 @@ class Wire3D:
         
         """
 
-        self.sys = kwant.Builder()
-
         #add sites in scattering region
         self.sys[self.lattice.shape(
             self._hexagon_wire, (0, 0, 0))] = self._onsite
@@ -202,6 +161,8 @@ class Wire3D:
 
         self._attach_leads(lead_start_top, lead_start_side,
                           lead_end_top, lead_end_side)
+
+        #self.system_plot()
 
         self.sys = self.sys.finalized()
 
@@ -261,7 +222,7 @@ class Wire3D:
         return kwant.lattice.Monatomic(basis_vectors)
 
     def _onsite(self, args):
-        # + im * kwant.digest.gauss(str(site.pos))
+        # +  kwant.digest.gauss(str(site.pos))
         return 6 * self.t
 
         

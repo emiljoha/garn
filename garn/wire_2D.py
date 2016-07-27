@@ -1,26 +1,16 @@
 import kwant
 from math import sqrt
 from matplotlib import pyplot
+
 from garn.geometry import rectangle
-from garn.saving import _read_file_to_wire
+from garn.system_wide import Wire
 
 
-class Wire2D:
+class Wire2D(Wire):
     """Wire2D facilitates the modelling of nanowire contact geometries in
     Kwant by actings as a help in constructing a 2D projection of a
     nanowire and attaching customizabel contacts in each end.
     """
-    
-    
-    a = 1
-    energies = []
-    transmission = []
-    sys = kwant.Builder()
-
-    parameters_names = ["identifier", "t", "base", "wire_length",
-                        "lead_length", "start_top", "start_right",
-                        "start_left", "start_bottom", "end_top",
-                        "end_right", "end_left", "end_bottom"]
     
     
     
@@ -72,47 +62,46 @@ class Wire2D:
             Uses the data-file specified by the str to create a the instance
 
         """
-                 
-        if (file_name == ""):
-            scaling_factor = step_length ** -1
-            self.t = step_length ** -2
-            self.no_file = True
-            self.identifier = identifier
-            self.base = int(scaling_factor * base)  # width of wire
-            self.wire_length = int(scaling_factor * wire_length)
-            self.lead_length = int(scaling_factor * lead_length)
-            self.leads = [False, start_right, start_left,
-                          False, False, end_right,
-                          end_left, False]
-
-        else:
-            _read_file_to_wire(self, file_name)
-            self.no_file = False
-
-
-        self.parameters_values = (self.identifier, self.t, self.base,
-                             self.wire_length, self.lead_length,
-                             self.leads[0], self.leads[1],
-                             self.leads[2], self.leads[3],
-                             self.leads[4], self.leads[5],
-                             self.leads[6], self.leads[7])
+        Wire.__init__(self, base=base, wire_length=wire_length,
+                      lead_length=lead_length, identifier=identifier,
+                      file_name=file_name, step_length=step_length,
+                      start_top=False, start_right=start_right,
+                      start_left=start_left,
+                      start_bottom=False, end_top=False,
+                      end_right=end_right, end_left=end_left,
+                      end_bottom=False)
 
         # Set lattice vectors for lattice object
         basis_vectors = ((self.a, 0), (0, self.a))
         self.lattice = kwant.lattice.Monatomic(basis_vectors)
-        
+        #kwant.plot(self.sys)
         self._make_system()
 
-    def __eq__(self, other):
-        """Define equality as equality of transmission results"""
-        if isinstance(other, self.__class__):
-            if len(self.transmission) == len(other.transmission):
-                for i in range(len(self.transmission)):
-                    if str(self.transmission[i]) != str(other.transmission[i]):
-                        return False
-                return True
-        else:
-            return False
+    def _make_system(self):
+        """Construct the wire.sys (kwant.Builder) attribute. 
+
+        This is were the sites in the scattering region are added to
+        the kwant.Builder object and functions to create leads and
+        attach them are called. Welcome to the heart of
+        :class:`garn.Wire3D`.
+        
+        """
+        #print(self.sys.__class__.__name__)
+        
+        # Fill a rectange with sites
+        self.sys[self.lattice.shape(
+            self._rectangle_wire, (0, 0))] = self._onsite
+       
+        
+        # Set hoppings between those sites.
+        self.sys[self.lattice.neighbors()] = -self.t
+        
+        lead_start, lead_end = self._create_leads()
+        
+        self._attach_leads(lead_start, lead_end)
+
+        self.sys = self.sys.finalized()
+        
 
     def _attach_leads(self, lead_start, lead_end):
         """Attaches leads to system according to the self.leads list
@@ -137,32 +126,7 @@ class Wire2D:
 
         if self.leads[5]:
             self.sys.attach_lead(lead_end.reversed())
-        
-                 
-                 
-    def _make_system(self):
-        """Construct the wire.sys (kwant.Builder) attribute. 
-
-        This is were the sites in the scattering region are added to
-        the kwant.Builder object and functions to create leads and
-        attach them are called. Welcome to the heart of
-        :class:`garn.Wire3D`.
-        
-        """
-        
-        # Fill a rectange with sites
-        self.sys[self.lattice.shape(
-            self._rectangle_wire, (0, 0))] = self._onsite
-                 
-        # Set hoppings between those sites.
-        self.sys[self.lattice.neighbors()] = -self.t
-
-        lead_start, lead_end = self._create_leads()
-
-        self._attach_leads(lead_start, lead_end)
-
-        self.sys = self.sys.finalized()
-                 
+              
     def _rectangle_wire(self, pos):
         """ find out if the position is inside the scattering region"""
         
