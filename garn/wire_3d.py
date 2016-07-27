@@ -88,7 +88,6 @@ class Wire3D(Wire):
         
         self.lattice = self._lattice()
         self._make_system()
-        self.system_plot()
 
 
 #---------------------------------------------------------------------
@@ -162,6 +161,8 @@ class Wire3D(Wire):
 
         self._attach_leads(lead_start_top, lead_start_side,
                           lead_end_top, lead_end_side)
+
+        #self.system_plot()
 
         self.sys = self.sys.finalized()
 

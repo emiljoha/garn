@@ -74,7 +74,7 @@ class Wire2D(Wire):
         # Set lattice vectors for lattice object
         basis_vectors = ((self.a, 0), (0, self.a))
         self.lattice = kwant.lattice.Monatomic(basis_vectors)
-        
+        #kwant.plot(self.sys)
         self._make_system()
 
     def _make_system(self):
@@ -86,6 +86,7 @@ class Wire2D(Wire):
         :class:`garn.Wire3D`.
         
         """
+        #print(self.sys.__class__.__name__)
         
         # Fill a rectange with sites
         self.sys[self.lattice.shape(

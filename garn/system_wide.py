@@ -2,12 +2,21 @@ import kwant
 import garn
 from numpy import sqrt
 
+import math
+def truncate(number, digits) -> float:
+    stepper = pow(10.0, digits)
+    return math.trunc(stepper * number) / stepper
+
+def truncate_list(lista, digits):
+    for ie in range(len(lista)):
+        lista[ie] = truncate(lista[ie], digits)
+    return lista
+    
 class Wire(object):
     
     a = 1
     energies = []
     transmission_data = []
-    sys = kwant.Builder()
 
     parameters_names = ["identifier", "t", "base", "wire_length",
                         "lead_length", "start_top", "start_right",
@@ -80,7 +89,7 @@ class Wire(object):
             self._read_file_to_wire(file_name)
             self.no_file = False
 
-
+        self.sys = kwant.Builder()
         self.parameters_values = (self.identifier, self.t, self.base,
                              self.wire_length, self.lead_length,
                              self.leads[0], self.leads[1],
@@ -237,17 +246,18 @@ class Wire(object):
             if print_to_commandline:
                 print(str(en) + " " + str(con_tot))
 
-
     def __eq__(self, other):
         """ Defentition of equality used in testing
 
         Compares transmission_data attributes element wise
         """
-        if self.transmission_data == other.transmission_data:
+        
+            
+        if truncate_list(self.transmission_data, 3) == truncate_list(other.transmission_data, 3):
             if self.base == other.base:
                 if self.wire_length == other.wire_length:
                     if self.lead_length == other.lead_length:
-                        if self.step_length == other.step_length:
+                        if self.t == other.t:
                             return True
 
         return False
@@ -322,19 +332,22 @@ class Wire(object):
         
         """
         
-        f = open(file_name)
-
         
-        # read wire information from file to list
-        values = []                              
-        for parameter in self.parameters_names:
-            line = f.readline()
-            line = line.split()
-            if(line[0] == (parameter + "=")):
-                values.append(line[1])
-            else:
-                print("File: " + file_name + "not correctly formatted")
-                return
+        with open(file_name, 'r') as f:
+            # read wire information from file to list
+            values = []                              
+            for parameter in self.parameters_names:
+                line = f.readline()
+                line = line.split()
+                if(line[0] == (parameter + "=")):
+                    values.append(line[1])
+                else:
+                    print("File: " + file_name + "not correctly formatted")
+                    return
+            for line in f:
+                line2 = line.split()
+                self.energies.append(float(line2[0]))
+                self.transmission_data.append(float(line2[1]))
 
         self.identifier = values[0]
         self.t = float(values[1])
@@ -355,11 +368,6 @@ class Wire(object):
         self.wire_length = int(scaling_factor * wire_length)
         self.lead_length = int(scaling_factor * lead_length)
                        
-        for line in f:
-            line2 = line.split()
-            self.energies.append(float(line2[0]))
-            self.transmission_data.append(float(line2[1]))
-
 
     def _save_to_file(self, energy, transmission):
         """Save result of calculation to file.
