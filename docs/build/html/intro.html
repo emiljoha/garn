@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &#8212; Garn 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reference of public functions" href="reference.html" />
+    <link rel="prev" title="Welcome to Garn’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-garn">
+<span id="introduction"></span><h1>Introduction<a class="headerlink" href="#module-garn" title="Permalink to this headline">¶</a></h1>
+<p>Garn is a small <a class="reference external" href="http://kwant-project.org/">Kwant</a> based package for doing effective mass
+calculations on two models of contact geometry effects on
+semiconductor nanowires.</p>
+<p>This documentation is of the software and how it is used and will not
+cover the physics behind the simulations. A formal introduction to the
+project is publiched in <a class="reference external" href="http://lup.lub.lu.se/student-papers/record/8878322">Numerical simulations of contact geometry
+effects on transport properties of semiconductor nanowires</a>.</p>
+<div class="section" id="using-garn">
+<h2>Using Garn<a class="headerlink" href="#using-garn" title="Permalink to this headline">¶</a></h2>
+<p>As any python package when the package is in your python path type</p>
+<div class="highlight-Python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">garn</span>
+</pre></div>
+</div>
+<p>to use it.</p>
+<p>Creating a wire system is done with a call to any of the two wire
+classes <a class="reference internal" href="comp_ref.html#garn.Wire3D" title="garn.Wire3D"><code class="xref py py-class docutils literal"><span class="pre">Wire3D</span></code></a> or <a class="reference internal" href="comp_ref.html#garn.Wire2D" title="garn.Wire2D"><code class="xref py py-class docutils literal"><span class="pre">Wire2D</span></code></a>. In this case
+<a class="reference internal" href="comp_ref.html#garn.Wire3D" title="garn.Wire3D"><code class="xref py py-class docutils literal"><span class="pre">Wire3D</span></code></a>.</p>
+<div class="highlight-Python"><div class="highlight"><pre><span></span><span class="n">wire</span> <span class="o">=</span> <span class="n">garn</span><span class="o">.</span><span class="n">Wire2D</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">wire_length</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">lead_length</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                        <span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;test-2D&quot;</span><span class="p">,</span> <span class="n">step_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now you can plot the system with the <code class="xref py py-meth docutils literal"><span class="pre">system_plot()</span></code>
+methodto see if it looks as you expect.</p>
+<div class="highlight-Python"><div class="highlight"><pre><span></span><span class="n">wire</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In the end it is all about calculation the transmission through the
+system. This is done with with the :meth: <cite>~garn.transmission</cite>
+function. For example calculating the transmission from the start to
+the end of the wire in 10 equidistant points in the intervall 0 to 1 [t]
+can done with the command.</p>
+<div class="highlight-Python"><div class="highlight"><pre><span></span><span class="n">wire</span><span class="o">.</span><span class="n">transmission</span><span class="p">(</span><span class="n">start_energy</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_energy</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                  <span class="n">number_of_points</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The transmission data and information about the wire is saved in a
+file named after the following principle</p>
+<div class="highlight-Python"><div class="highlight"><pre><span></span><span class="s2">&quot;data-&quot;</span> <span class="o">+</span> <span class="n">wire</span><span class="o">.</span><span class="n">identifier</span>
+</pre></div>
+</div>
+<p>In this case wire.identifier is set to &#8220;test-2D&#8221; so the filename will be
+&#8220;data-test-2D&#8221;. The resulting list of transmissions and energies can also be
+accesed via the attributes wire.energies and wire.transmission.</p>
+<p>A instance of the classes <a class="reference internal" href="comp_ref.html#garn.Wire2D" title="garn.Wire2D"><code class="xref py py-class docutils literal"><span class="pre">Wire2D</span></code></a> and <a class="reference internal" href="comp_ref.html#garn.Wire3D" title="garn.Wire3D"><code class="xref py py-class docutils literal"><span class="pre">Wire3D</span></code></a>
+can also be made with the &#8220;file_name&#8221; parameter as only parameter.</p>
+<div class="highlight-Python"><div class="highlight"><pre><span></span><span class="n">wire_from_file</span> <span class="o">=</span> <span class="n">garn</span><span class="o">.</span><span class="n">Wire2D</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="s2">&quot;data-test-2D&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#using-garn">Using Garn</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Garn&#8217;s documentation!</a></li>
+      <li>Next: <a href="reference.html" title="next chapter">Reference of public functions</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/intro.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Emil Johansson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/intro.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
