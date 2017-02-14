@@ -7,7 +7,7 @@ transmission.
 The most up to date documentation of the software can be found in the
 "doc/build/html" directory. Start by opening the "index.html"
 file. The documentation is also avalible through `this website
-<http://garn.hopto.org>`_ .
+<http://nat13ejo.github.io/garn/>`_ .
 
 A formal introduction can be found throuhg the bachelor thesis
 `Numerical simulations of contact geometry effects on transport
